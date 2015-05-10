@@ -12,51 +12,65 @@ World.initialize = function (SIZE) {
   var blankWorldMatrix = [];
   var world;
 
-  var getTypeOfPreTile = function (currentCordinate) {
-    var isInitialCordinate_x = currentCordinate.x === 0;
-    var isInitialCordinate_y = currentCordinate.y === 0;
-    var typeOfPreTile_x;
-    var typeOfPreTile_y;
-
-    if(isInitialCordinate_x) {
-      typeOfPreTile_x = "NOT_EXIST";
-    }else{
-      typeOfPreTile_x = blankWorldMatrix[currentCordinate.x-1].tile.type;
-    }
-
-    if(isInitialCordinate_y) {
-      typeOfPreTile_y = "NOT_EXIST";
-    }else{
-      typeOfPreTile_y = blankWorldMatrix[currentCordinate.y-1].tile.type;
-    }
-
-    return {
-      x: typeOfPreTile_x,
-      y: typeOfPreTile_y
-    };
-  };
-
   this._blankWorld = function (width, height) {
     var i;
     var j;
+    var cordinate_x;
     for (i = 0; i < width; i++) {
+      cordinate_x = [];
       for (j = 0; j < height; j++) {
-        blankWorldMatrix.push({
+        cordinate_x.push({
           cordinate: {
-            x: i,
-            y: j
+            x: j,
+            y: i
           },
           tile: {
-            type: "BLANK",
-            typeOfPreTile: getTypeOfPreTile({x: i, y: j})
+            type: "BLANK"
           }
         });
       }
+      blankWorldMatrix.push(cordinate_x);
     }
     return blankWorldMatrix;
   };
 
   this._setTile = function (world) {
+    var enviromentRatio = {
+      glass: 3,
+      water:4,
+      desert: 1,
+      mountain: 1,
+      forest: 1
+    };
+
+    var tmpTile;
+
+    function difineTile(){
+      tmpTile = {
+        maxRatio: 0,
+        maxEnv: ""
+      };
+
+      var checkRatio;
+      for(var env in enviromentRatio){
+        checkRatio = enviromentRatio[env] * Math.random() * 10;
+        if(checkRatio > tmpTile.maxRatio){
+          tmpTile.maxRatio = checkRatio;
+          tmpTile.maxEnv = env.toUpperCase();
+        }
+      }
+      return tmpTile.maxEnv;
+    }
+
+    var world_y;
+
+    for (var y = 0; y < world.length; y++) {
+      world_y = world[y];
+      for (var x = 0; x < world_y.length; x++) {
+        world_y[x].tile.type = difineTile();
+      }
+    }
+
     return world;
   };
 
