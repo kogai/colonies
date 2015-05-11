@@ -1,6 +1,13 @@
 "use strict";
 
 var World = {};
+var enviromentRatio = {
+  glass: 3,
+  water:4,
+  desert: 1,
+  mountain: 1,
+  forest: 1
+};
 
 World.createWorld = function (SIZE) {
   return new this.initialize(SIZE);
@@ -35,14 +42,6 @@ World.initialize = function (SIZE) {
   };
 
   this._setTile = function (world) {
-    var enviromentRatio = {
-      glass: 3,
-      water:4,
-      desert: 1,
-      mountain: 1,
-      forest: 1
-    };
-
     var tmpTile;
 
     function difineTile(){
@@ -54,31 +53,72 @@ World.initialize = function (SIZE) {
       var checkRatio;
       var env;
       for(env in enviromentRatio){
-        checkRatio = enviromentRatio[env] * Math.random() * 10;
-        if(checkRatio > tmpTile.maxRatio){
-          tmpTile.maxRatio = checkRatio;
-          tmpTile.maxEnv = env.toUpperCase();
+        if (enviromentRatio.hasOwnProperty(env)) {
+          checkRatio = enviromentRatio[env] * Math.random() * 10;
+          if(checkRatio > tmpTile.maxRatio){
+            tmpTile.maxRatio = checkRatio;
+            tmpTile.maxEnv = env.toUpperCase();
+          }
         }
       }
       return tmpTile.maxEnv;
     }
 
-    var world_y;
-
-    for (var y = 0; y < world.length; y++) {
-      world_y = world[y];
-      for (var x = 0; x < world_y.length; x++) {
-        world_y[x].tile.type = difineTile();
+    var x, y, world_x;
+    for (x = 0; x < world.length; x++) {
+      world_x = world[x];
+      for (y = 0; y < world_x.length; y++) {
+        world_x[y].tile.type = difineTile();
       }
     }
 
     return world;
   };
 
+  this._setNaver = function (world) {
+    var x, y, left, top, right, bottom;
+    for (x = 0; x < world.length; x++) {
+      for (y = 0; y < world[x].length; y++) {
+
+        if(x === 0){
+          left = world[world.length-1][y].tile.type;
+        }else{
+          left = world[x-1][y].tile.type;
+        }
+
+        if(x === world.length-1){
+          right = world[0][y].tile.type;
+        }else{
+          right = world[x+1][y].tile.type;
+        }
+
+        if(y === 0){
+          top = world[x][world[x].length-1].tile.type;
+        }else{
+          top = world[x][y-1].tile.type;
+        }
+
+        if(y === world[x].length-1){
+          bottom = world[x][0].tile.type;
+        }else{
+          bottom = world[x][y+1].tile.type;
+        }
+
+        world[x][y].tile.naver = {
+          left: left,
+          top: top,
+          right: right,
+          bottom: bottom
+        };
+      }
+    }
+    return world;
+  };
+
   world = this._blankWorld(this._width, this._height);
   world = this._setTile(world);
+  world = this._setNaver(world);
   return world;
-
 };
 
 module.exports = World;
