@@ -3,7 +3,7 @@
 var World = {};
 var enviromentRatio = {
   glass: 3,
-  water:4,
+  water:10,
   desert: 1,
   mountain: 1,
   forest: 1
@@ -20,16 +20,16 @@ World.initialize = function (SIZE) {
   var world;
 
   this._blankWorld = function (width, height) {
-    var i;
-    var j;
+    var x;
+    var y;
     var cordinate_x;
-    for (i = 0; i < width; i++) {
+    for (x = 0; x < width; x++) {
       cordinate_x = [];
-      for (j = 0; j < height; j++) {
+      for (y = 0; y < height; y++) {
         cordinate_x.push({
           cordinate: {
-            x: i,
-            y: j
+            x: x,
+            y: y
           },
           tile: {
             type: "BLANK"
