@@ -24,7 +24,7 @@
       "it",
       "expect",
       "jasmine",
-      "beforeEach"
+      "before"
   ],
   "regexp": false,
   "rhino": false,
