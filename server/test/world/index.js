@@ -59,4 +59,5 @@ describe('worldのテスト', function() {
 		(testEle.right).should.be.exactly(right);
 		(testEle.bottom).should.be.exactly(bottom);
 	});
+
 });
